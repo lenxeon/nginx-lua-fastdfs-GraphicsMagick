@@ -1,17 +1,24 @@
 nginx-lua-fastdfs-GraphicsMagick
-==================
-fastdfs开源的分布式文件系统，此脚本利用nginx lua模块，动态生成图片缩略图，fastdfs只存一份原图。lua通过socket获取fastdfs的原图，并存放到本地，根据不同规则url，例如：_60x60.jpg、_80x80.jpg，类似淘宝图片url规则。利用gm命令生成本地缩略图，第二次访问直接返回本地图片。定时任务凌晨清除7天内未访问的图片，节省空间。
 
-图片访问举例
-----------------
-1. [http://192.168.1.113/group1/M00/00/00/wKgBcVN0wDiAILQXAAdtg6qArdU189.jpg](http://192.168.1.113/group1/M00/00/00/wKgBcVN0wDiAILQXAAdtg6qArdU189.jpg)
-2. [http://192.168.1.113/group1/M00/00/00/wKgBcVN0wDiAILQXAAdtg6qArdU189.jpg_80x80.jpg](http://192.168.1.113/group1/M00/00/00/wKgBcVN0wDiAILQXAAdtg6qArdU189.jpg_80x80.jpg)
-3. [http://gi1.md.alicdn.com/imgextra/i1/401612253/T2ASPfXE4XXXXXXXXX_!!401612253.jpg_60x60.jpg](http://gi1.md.alicdn.com/imgextra/i1/401612253/T2ASPfXE4XXXXXXXXX_!!401612253.jpg_60x60.jpg)
-4. [http://gi1.md.alicdn.com/imgextra/i1/401612253/T2ASPfXE4XXXXXXXXX_!!401612253.jpg_80x80.jpg](http://gi1.md.alicdn.com/imgextra/i1/401612253/T2ASPfXE4XXXXXXXXX_!!401612253.jpg_80x80.jpg)
+==================
+这是从[https://github.com/hpxl/nginx-lua-fastdfs-GraphicsMagick](https://github.com/hpxl/nginx-lua-fastdfs-GraphicsMagick)fork过来的修改版本
+相对于原版本，作出了详尽的注释，详情见lua/fastdfs.lua
+
+本版本支持了三种方式的缩略图生成 _(width)x(height)_m[1-3].(file_expand)
+
+原文件 
+http://localhost/group1/M00/01/7C/OkTuVFTPLhiAXLOtAADCVxCAPKc352.jpg
+http://localhost/group1/M00/01/7C/OkTuVFTPLhiAXLOtAADCVxCAPKc352.jpg_400x0_m1.jpg  定宽缩放模式
+http://localhost/group1/M00/01/7C/OkTuVFTPLhiAXLOtAADCVxCAPKc352.jpg_400x400_m2.jpg 等比缩放并裁减多余的，如头像logo等
+http://localhost/group1/M00/01/7C/OkTuVFTPLhiAXLOtAADCVxCAPKc352.jpg_400x400_m3.jpg 等比绽放不裁减，会有空白间隙
+
+获取原文件时，本版本直接向fastdfs要的源数据并输出，并没有先写到本地，各位可自行决定
+定时清除crontab.sh定时任务凌晨清除7天内未访问的图片，节省空间，需添加到系统任务中
 
 
 参考网址
 ----------------
+1. [https://github.com/hpxl/nginx-lua-fastdfs-GraphicsMagick](https://github.com/hpxl/nginx-lua-fastdfs-GraphicsMagick)
 1. [https://github.com/openresty/lua-nginx-module](https://github.com/openresty/lua-nginx-module)
 2. [https://github.com/azurewang/Nginx_Lua-FastDFS](https://github.com/azurewang/Nginx_Lua-FastDFS)
 3. [https://github.com/azurewang/lua-resty-fastdfs](https://github.com/azurewang/lua-resty-fastdfs)
